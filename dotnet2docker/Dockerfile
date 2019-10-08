@@ -3,11 +3,11 @@ WORKDIR /app
 EXPOSE 5000
 
 FROM microsoft/dotnet:2.2-sdk AS build
-WORKDIR /app
-COPY . /app
-RUN dotnet restore "app/dotnet2docker.csproj"
+WORKDIR /src
+#COPY ["dotnet2docker/dotnet2docker.csproj", "dotnet2docker/"]
+RUN dotnet restore "dotnet2docker/dotnet2docker.csproj"
 COPY . .
-WORKDIR "/app/dotnet2docker"
+WORKDIR "/src/dotnet2docker"
 RUN dotnet build "dotnet2docker.csproj" -c Release -o /app
 
 FROM build AS publish
