@@ -1,19 +1,9 @@
-FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
+FROM microsoft/aspnetcore:latest
+#把当前目录复制到镜像的 app目录
+COPY . /app
+#指定工作目录
 WORKDIR /app
+#暴露的端口 是之前准备asp.net core应用设置的端口一致 UseUrls("http://*:5000")
 EXPOSE 5000
-
-FROM microsoft/dotnet:2.2-sdk AS build
-WORKDIR /src
-COPY ["dotnet2docker.csproj", "dotnet2docker/"]
-RUN dotnet restore "dotnet2docker/dotnet2docker.csproj"
-COPY . .
-WORKDIR "/src/dotnet2docker"
-RUN dotnet build "dotnet2docker.csproj" -c Release -o /app
-
-FROM build AS publish
-RUN dotnet publish "dotnet2docker.csproj" -c Release -o /app
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app .
+#最后设置启动的dll
 ENTRYPOINT ["dotnet", "dotnet2docker.dll"]
